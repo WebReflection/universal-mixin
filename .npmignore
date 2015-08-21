@@ -1,0 +1,13 @@
+.DS_Store
+.travis.yml
+src/*
+test/*
+template/*
+template/license.after
+template/license.before
+utils/*
+node_modules/*
+build/*.amd.js
+Makefile
+index.html
+testrunner.js
