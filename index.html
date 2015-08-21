@@ -1,0 +1,181 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Universal-mixin by WebReflection</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/WebReflection/universal-mixin">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/WebReflection/universal-mixin/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/WebReflection/universal-mixin/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Universal-mixin</h1>
+          <p>A mixin usable for both generic objects and decorators.</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/WebReflection">WebReflection</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a id="universal-mixin-" class="anchor" href="#universal-mixin-" aria-hidden="true"><span class="octicon octicon-link"></span></a>universal-mixin <a href="http://travis-ci.org/WebReflection/universal-mixin"><img src="https://secure.travis-ci.org/WebReflection/universal-mixin.svg" alt="build status"></a>
+</h1>
+
+<p>Inspired by <a href="https://twitter.com/raganwald">Reginald Braithwaite</a> proposal in his <a href="http://raganwald.com/2015/06/26/decorators-in-es7.html">Using ES.later Decorators as Mixins</a> post, and discussed with both Reginald and <a href="https://twitter.com/addyosmani">Addy Osmani</a> in <a href="https://gist.github.com/addyosmani/a0ccf60eae4d8e5290a0#gistcomment-1489585">the gist</a> related to Addy's <a href="https://medium.com/google-developers/exploring-es7-decorators-76ecb65fb841">Exploring ES2016 Decorators</a> post, this <code>mixin</code> function goal is to bring a universal way, from <em>ES3</em> to <em>ES.future</em>, client or server, to define functions usable as decorators for both clases and generic objects. </p>
+
+<p>Following the same ES7 example used in Addy's post, based on this <code>mixin</code> solution.</p>
+
+<div class="highlight highlight-js"><pre><span class="pl-k">const</span> <span class="pl-c1">SuperPowers</span> <span class="pl-k">=</span> <span class="pl-c1">mixin</span>({
+  <span class="pl-en">init</span>() {
+    <span class="pl-c1">Object</span>.<span class="pl-c1">defineProperty</span>(<span class="pl-v">this</span>, <span class="pl-s"><span class="pl-pds">'</span>_superPowers<span class="pl-pds">'</span></span>, {value<span class="pl-k">:</span> []});
+  },
+  <span class="pl-en">addPower</span>(<span class="pl-smi">name</span>) {
+    <span class="pl-v">this</span>.<span class="pl-c1">_superPowers</span>.<span class="pl-c1">push</span>(name);
+    <span class="pl-k">return</span> <span class="pl-v">this</span>;
+  },
+  get <span class="pl-en">powers</span>() {
+    <span class="pl-k">return</span> <span class="pl-v">this</span>.<span class="pl-c1">_superPowers</span>.<span class="pl-c1">slice</span>(<span class="pl-c1">0</span>);
+  }
+});
+
+<span class="pl-k">const</span> <span class="pl-c1">UtilityBelt</span> <span class="pl-k">=</span> <span class="pl-c1">mixin</span>({
+  <span class="pl-en">init</span>() {
+    <span class="pl-c1">Object</span>.<span class="pl-c1">defineProperty</span>(<span class="pl-v">this</span>, <span class="pl-s"><span class="pl-pds">'</span>_utilityBelt<span class="pl-pds">'</span></span>, {value<span class="pl-k">:</span> []});
+  },
+  <span class="pl-en">addToBelt</span>(<span class="pl-smi">name</span>) {
+    <span class="pl-v">this</span>.<span class="pl-c1">_utilityBelt</span>.<span class="pl-c1">push</span>(name);
+    <span class="pl-k">return</span> <span class="pl-v">this</span>;
+  },
+  get <span class="pl-en">utilities</span>() {
+    <span class="pl-k">return</span> <span class="pl-v">this</span>.<span class="pl-c1">_utilityBelt</span>.<span class="pl-c1">slice</span>(<span class="pl-c1">0</span>);
+  }
+});
+
+<span class="pl-c">// Usable as decorators</span>
+@SuperPowers
+@UtilityBelt
+<span class="pl-k">class</span> <span class="pl-en">ComicBookCharacter</span> {
+  <span class="pl-en">constructor</span>(<span class="pl-smi">first</span>, <span class="pl-smi">last</span>) {
+    <span class="pl-v">this</span>.<span class="pl-c1">firstName</span> <span class="pl-k">=</span> first;
+    <span class="pl-v">this</span>.<span class="pl-c1">lastName</span> <span class="pl-k">=</span> last;
+    <span class="pl-c">// initialize mixins</span>
+    <span class="pl-c">// if or when it's necessary</span>
+    <span class="pl-v">this</span>.<span class="pl-c1">init</span>();
+  }
+  <span class="pl-en">realName</span>() {
+    <span class="pl-k">return</span> <span class="pl-v">this</span>.<span class="pl-c1">firstName</span> <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">'</span> <span class="pl-pds">'</span></span> <span class="pl-k">+</span> <span class="pl-v">this</span>.<span class="pl-c1">lastName</span>;
+  } 
+};
+
+<span class="pl-c">// Usage examples</span>
+<span class="pl-k">const</span> <span class="pl-c1">batman</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">ComicBookCharacter</span>(<span class="pl-s"><span class="pl-pds">'</span>Bruce<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>Wayne<span class="pl-pds">'</span></span>);
+<span class="pl-en">console</span><span class="pl-c1">.log</span>(batman.<span class="pl-c1">realName</span>());
+
+batman
+  .<span class="pl-c1">addToBelt</span>(<span class="pl-s"><span class="pl-pds">'</span>batarang<span class="pl-pds">'</span></span>)
+  .<span class="pl-c1">addToBelt</span>(<span class="pl-s"><span class="pl-pds">'</span>cape<span class="pl-pds">'</span></span>);
+
+<span class="pl-en">console</span><span class="pl-c1">.log</span>(batman.<span class="pl-c1">utilities</span>);
+
+batman
+  .<span class="pl-c1">addPower</span>(<span class="pl-s"><span class="pl-pds">'</span>detective<span class="pl-pds">'</span></span>)
+  .<span class="pl-c1">addPower</span>(<span class="pl-s"><span class="pl-pds">'</span>voice sounds like Gollum has asthma<span class="pl-pds">'</span></span>);
+
+<span class="pl-en">console</span><span class="pl-c1">.log</span>(batman.<span class="pl-c1">powers</span>);</pre></div>
+
+<p>It is also possible to use the <code>mixin</code> with other objects too.</p>
+
+<div class="highlight highlight-js"><pre><span class="pl-c">// as example only, don't use at home</span>
+<span class="pl-k">var</span> SimpleEmitter <span class="pl-k">=</span> <span class="pl-c1">mixin</span>({
+  <span class="pl-en">init</span><span class="pl-k">:</span> <span class="pl-k">function</span> () {
+    <span class="pl-c1">Object</span>.<span class="pl-c1">defineProperty</span>(
+      <span class="pl-v">this</span>,
+      <span class="pl-s"><span class="pl-pds">'</span>_emitter<span class="pl-pds">'</span></span>,
+      {value<span class="pl-k">:</span> <span class="pl-c1">Object</span>.<span class="pl-c1">create</span>(<span class="pl-c1">null</span>)}
+    );
+  },
+  <span class="pl-en">on</span><span class="pl-k">:</span> <span class="pl-k">function</span> (<span class="pl-smi">type</span>, <span class="pl-smi">handler</span>) {
+    (<span class="pl-v">this</span>.<span class="pl-c1">_emitter</span>[type] <span class="pl-k">||</span> (
+      <span class="pl-v">this</span>.<span class="pl-c1">_emitter</span>[type] <span class="pl-k">=</span> []
+    )).<span class="pl-c1">push</span>(handler);
+  },
+  <span class="pl-en">emit</span><span class="pl-k">:</span> <span class="pl-k">function</span> (<span class="pl-smi">type</span>) {
+    <span class="pl-k">var</span> args <span class="pl-k">=</span> [].<span class="pl-c1">slice</span>.<span class="pl-c1">call</span>(arguments, <span class="pl-c1">1</span>);
+    (<span class="pl-v">this</span>.<span class="pl-c1">_emitter</span>[type] <span class="pl-k">||</span> []).<span class="pl-c1">forEach</span>(<span class="pl-k">function</span> (<span class="pl-smi">fn</span>) {
+      fn.<span class="pl-c1">apply</span>(<span class="pl-v">this</span>, args);
+    }, <span class="pl-v">this</span>);
+  }
+});
+
+
+<span class="pl-k">var</span> obj <span class="pl-k">=</span> <span class="pl-c1">SimpleEmitter</span>({});
+
+obj.<span class="pl-c1">init</span>();
+obj.<span class="pl-c1">on</span>(<span class="pl-s"><span class="pl-pds">'</span>event<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> (<span class="pl-smi">err</span>, <span class="pl-smi">res</span>) {
+  <span class="pl-en">console</span><span class="pl-c1">.log</span>(err, res);
+});
+obj.<span class="pl-c1">emit</span>(<span class="pl-s"><span class="pl-pds">'</span>event<span class="pl-pds">'</span></span>, <span class="pl-c1">null</span>, <span class="pl-c1">123</span>);
+</pre></div>
+
+<p>It is also possible to define mixin constants, propeties, or static methods, passing a second object as parameter.</p>
+
+<div class="highlight highlight-js"><pre><span class="pl-k">var</span> WithStatic <span class="pl-k">=</span> <span class="pl-c1">mixin</span>({}, {
+  VALUE<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>any<span class="pl-pds">'</span></span>,
+  <span class="pl-en">method</span><span class="pl-k">:</span> <span class="pl-k">function</span> () {
+    <span class="pl-k">return</span> WithStatic.<span class="pl-c1">VALUE</span>;
+  }
+});
+
+WithStatic.<span class="pl-c1">method</span>(); <span class="pl-c">// any</span></pre></div>
+
+<h3>
+<a id="which-file-" class="anchor" href="#which-file-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Which file ?</h3>
+
+<p>In nodejs you can either <code>npm install universal-mixin</code> or use <a href="build/universal-mixin.node.js">universal-mixin.node.js</a> file.</p>
+
+<p>For browsers you can use <a href="build/universal-mixin.js">universal-mixin.js</a> file, and for AMD you can use <a href="build/universal-mixin.amd.js">universal-mixin.amd.js</a>.</p>
+
+<h3>
+<a id="compatibility" class="anchor" href="#compatibility" aria-hidden="true"><span class="octicon octicon-link"></span></a>Compatibility</h3>
+
+<p>The provided functionality is compatible with IE6 or greater, Espruino, NodeJS, and other common JavaScript engines.</p>
+
+<p>In pre ES5 copmatible engines properties will be set enumerable and if no ES5 shim+sham is provided upfront getters and setters might not be accepted.</p>
+
+<p>While IE6 and IE7 works just fine, if you are targeting IE8 please be sure ES5 shim+sham is loaded upfront.
+You can put this on top of your page.</p>
+
+<div class="highlight highlight-html"><pre><span class="pl-c">&lt;!--[if IE 8]&gt;</span>
+<span class="pl-c">&lt;script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.7/es5-shim.min.js"&gt;&lt;/script&gt;</span>
+<span class="pl-c">&lt;script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.7/es5-sham.min.js"&gt;&lt;/script&gt;</span>
+<span class="pl-c">&lt;![endif]--&gt;</span></pre></div>
+
+<p>Finally, you can test your browser through the <a href="http://webreflection.github.io/universal-mixin/test/">test page</a>.</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
