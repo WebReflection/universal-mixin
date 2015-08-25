@@ -123,7 +123,7 @@ For browsers you can use [universal-mixin.js](build/universal-mixin.js) file, an
 
 The provided functionality is compatible with IE6 or greater, Espruino, NodeJS, and other common JavaScript engines.
 
-In pre ES5 copmatible engines properties will be set enumerable and if no ES5 shim+sham is provided upfront getters and setters might not be accepted.
+In pre ES5 compatible engines properties will be set enumerable and if no ES5 shim+sham is provided upfront getters and setters might not be accepted.
 
 While IE6 and IE7 works just fine, if you are targeting IE8 please be sure ES5 shim+sham is loaded upfront.
 You can put this on top of your page.
