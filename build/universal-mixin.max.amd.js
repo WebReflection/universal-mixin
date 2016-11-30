@@ -131,7 +131,9 @@ var mixin = (function (O) {'use strict';
         property = instanceKeys[i];
         if (property === 'init') {
           if (!hOP.call(proto, uid)) {
-            defineProperty(proto, uid, {value: []});
+            defineProperty(proto, uid, {
+              value: uid in proto ? proto[uid].slice(0) : []
+            });
             defineProperty(proto, property, initDescriptor);
           }
           proto[uid].push(behaviour[property]);
