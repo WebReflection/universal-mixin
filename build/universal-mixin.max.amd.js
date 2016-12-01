@@ -132,7 +132,8 @@ var mixin = (function (O) {'use strict';
         if (property === 'init') {
           if (!hOP.call(proto, uid)) {
             defineProperty(proto, uid, {
-              value: uid in proto ? proto[uid].slice(0) : []
+              // polyfilled Symbol causes shenanigans here
+              value: uid in proto ? (proto[uid] || []).slice(0) : []
             });
             defineProperty(proto, property, initDescriptor);
           }
