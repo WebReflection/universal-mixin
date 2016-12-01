@@ -94,6 +94,29 @@ wru.test([
       obj.init();
       wru.assert(obj.value === Greeter.DEFAULT_SENTENCE && obj.other === true);
     }
+  }, {
+    name: 'inherited mixin',
+    test: function () {
+      var mA = mixin({init: function () {
+        this.mA = true;
+      }});
+      var mB = mixin({init: function () {
+        this.mB = true;
+      }});
+      var CA = function () {};
+      mA(CA);
+      var CB = function () {};
+      (CB.prototype = new CA).constructor = CB;
+      mB(CB);
+      var iA = new CA;
+      var iB = new CB;
+      iA.init();
+      iB.init();
+      wru.assert('init from A was invoked', iA.mA === true);
+      wru.assert('init from A via B was not invoked', iA.mB === undefined);
+      wru.assert('init from B via A was invoked', iB.mA === true);
+      wru.assert('init from B was invoked', iB.mB === true);
+    }
   }
 ].concat(typeof Symbol !== 'undefined' && Symbol.hasInstance ? [
   {
