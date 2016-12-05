@@ -117,6 +117,26 @@ wru.test([
       wru.assert('init from B via A was invoked', iB.mA === true);
       wru.assert('init from B was invoked', iB.mB === true);
     }
+  }, {
+    name: 'method override',
+    test: function () {
+      function classMethod() {
+        mA.method.call(this);
+        this.original = true;
+      }
+      function mixinMethod() {
+        this.mixin = true;
+      }
+      var mA = mixin({method: mixinMethod});
+      var CA = function () {};
+      CA.prototype.method = classMethod;
+      mA(CA);
+      var iA = new CA;
+      wru.assert('correct mixin method', mixinMethod === mA.method);
+      wru.assert('correct class method', classMethod === iA.method);
+      iA.method();
+      wru.assert('correct invoke', iA.mixin === true && iA.original === true);
+    }
   }
 ].concat(typeof Symbol !== 'undefined' && Symbol.hasInstance ? [
   {

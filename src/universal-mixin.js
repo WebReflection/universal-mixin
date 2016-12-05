@@ -115,7 +115,7 @@ var mixin = (function (O) {'use strict';
             defineProperty(proto, property, initDescriptor);
           }
           proto[uid].push(behaviour[property]);
-        } else {
+        } else if(!hOP.call(proto, property)) {
           descriptor = gOPD(behaviour, property);
           descriptor.enumerable = false;
           defineProperty(proto, property, descriptor);
@@ -141,6 +141,22 @@ var mixin = (function (O) {'use strict';
         return !!obj[typeTag];
       }}
     );
+
+    // provide access to methods for explicit invoke
+    // particularly useful to workaround classes overrides
+    for (var
+      property, descriptor,
+      i = 0, l = instanceKeys.length; i < l; i++
+    ) {
+      property = instanceKeys[i];
+      descriptor = gOPD(behaviour, property);
+      if (
+        hOP.call(descriptor, 'value') &&
+        typeof descriptor.value === 'function'
+      ) {
+        defineProperty(compose, property, descriptor);
+      }
+    }
 
     // return the function that could be used
     // as both decorator, or to enrich any sort of object
